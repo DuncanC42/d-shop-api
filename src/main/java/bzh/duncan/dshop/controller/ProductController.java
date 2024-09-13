@@ -1,7 +1,11 @@
 package bzh.duncan.dshop.controller;
 
-import org.springframework.stereotype.Controller;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RequiredArgsConstructor
+@RestController
+@RequestMapping("${api.prefix}/product")
 public class ProductController {
 }
