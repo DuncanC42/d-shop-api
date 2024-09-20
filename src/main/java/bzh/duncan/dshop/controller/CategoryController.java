@@ -1,5 +1,6 @@
 package bzh.duncan.dshop.controller;
 
+import bzh.duncan.dshop.dto.CategoryDto;
 import bzh.duncan.dshop.exceptions.AlreadyExistsException;
 import bzh.duncan.dshop.exceptions.CategoryNotFoundException;
 import bzh.duncan.dshop.model.Category;
@@ -24,7 +25,7 @@ public class CategoryController {
     @GetMapping("/all")
     public ResponseEntity<ApiResponse> getAllCategories() {
         try {
-            List<Category> categories = categoryService.getAllCategories();
+            List<CategoryDto> categories = categoryService.getAllCategories();
             return ResponseEntity.ok(new ApiResponse("Found !", categories));
         } catch ( Exception e ) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR)
@@ -45,7 +46,7 @@ public class CategoryController {
     @GetMapping("/category/{categoryId}")
     public ResponseEntity<ApiResponse> getCategoryById(@PathVariable Long categoryId) {
         try {
-            Category category = categoryService.getCategoryById(categoryId);
+            CategoryDto category = categoryService.getCategoryById(categoryId);
             return ResponseEntity.ok(new ApiResponse("Found", category));
         } catch ( CategoryNotFoundException e ) {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
@@ -57,7 +58,7 @@ public class CategoryController {
     @GetMapping("/category/name/{categoryName}")
     public ResponseEntity<ApiResponse> getCategoryByName(@PathVariable String categoryName) {
         try {
-            Category category = categoryService.getCategoryByName(categoryName);
+            CategoryDto category = categoryService.getCategoryByName(categoryName);
             return ResponseEntity.ok(new ApiResponse("Found", category));
         } catch ( CategoryNotFoundException e ) {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
