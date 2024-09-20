@@ -1,5 +1,6 @@
 package bzh.duncan.dshop.controller;
 
+import bzh.duncan.dshop.dto.ProductDto;
 import bzh.duncan.dshop.exceptions.ProductNotFoundException;
 import bzh.duncan.dshop.model.Product;
 import bzh.duncan.dshop.request.AddProductRequest;
@@ -26,8 +27,8 @@ public class ProductController {
 
     @GetMapping("/all")
     public ResponseEntity<ApiResponse> getAllProducts() {
-        List<Product> products = productService.getAllProducts();
-        return ResponseEntity.ok(new ApiResponse("success", products));
+        List<ProductDto> products = productService.getAllProducts();
+        return ResponseEntity.ok(new ApiResponse("Success", products));
     }
 
     @GetMapping("/product/{productId}")
@@ -72,26 +73,26 @@ public class ProductController {
 
     @GetMapping("/category/{category}/all")
     public ResponseEntity<ApiResponse> getProductsByCategory(@PathVariable String category) {
-        List<Product> products = productService.getProductsByCategory(category);
+        List<ProductDto> products = productService.getProductsByCategory(category);
         return ResponseEntity.ok(new ApiResponse("success", products));
     }
 
     @GetMapping("/product/by-brand")
     public ResponseEntity<ApiResponse> getProductsByBrand(@RequestParam String brand){
-        List<Product> products = productService.getProductsByBrand(brand);
+        List<ProductDto> products = productService.getProductsByBrand(brand);
         return ResponseEntity.ok(new ApiResponse("success", products));
     }
 
     @GetMapping("/product/by-name")
     public ResponseEntity<ApiResponse> getProductsByName(@RequestParam String name){
-        List<Product> products = productService.getProductsByName(name);
+        List<ProductDto> products = productService.getProductsByName(name);
         return ResponseEntity.ok(new ApiResponse("success", products));
     }
 
     @GetMapping("/by/category-and-brand")
     public ResponseEntity<ApiResponse> getProductsByCategoryAndBrand(@RequestParam String category, @RequestParam String brand){
         try {
-            List<Product> products = productService.getProductsByCategoryAndBrand(category, brand);
+            List<ProductDto> products = productService.getProductsByCategoryAndBrand(category, brand);
             if (products.isEmpty()){
                 return ResponseEntity.status(NOT_FOUND).body(new ApiResponse("No products found", null));
             }
@@ -104,7 +105,7 @@ public class ProductController {
     @GetMapping("/by/brand-and-name")
     public ResponseEntity<ApiResponse> getProductsByBrandAndName(@RequestParam String brand, @RequestParam String name){
         try {
-            List<Product> products = productService.getProductsByBrandAndName(brand, name);
+            List<ProductDto> products = productService.getProductsByBrandAndName(brand, name);
             if ( products.isEmpty()){
                 return ResponseEntity.status(NOT_FOUND).body(new ApiResponse("No products found", null));
             }

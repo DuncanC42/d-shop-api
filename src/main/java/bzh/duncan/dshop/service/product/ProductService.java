@@ -1,6 +1,8 @@
 package bzh.duncan.dshop.service.product;
 
+import bzh.duncan.dshop.dto.ProductDto;
 import bzh.duncan.dshop.exceptions.ProductNotFoundException;
+import bzh.duncan.dshop.mapper.ProductMapper;
 import bzh.duncan.dshop.model.Category;
 import bzh.duncan.dshop.model.Product;
 import bzh.duncan.dshop.repository.CategoryRepository;
@@ -11,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +28,7 @@ public class ProductService implements IProductService {
         //If yes -> set as the new product category
         //Else -> create the category and then save it as new Product category
 
-        Category category = Optional.ofNullable(categoryRepository.findByName(request.getCategory().getName()))
+        Category category = categoryRepository.findByName(request.getCategory().getName())
                 .orElseGet(() -> {
                     Category newCategory = new Category(request.getCategory().getName());
                     return categoryRepository.save(newCategory);
@@ -35,7 +37,7 @@ public class ProductService implements IProductService {
         return productRepository.save(createProduct(request, category));
     }
 
-    private Product createProduct(AddProductRequest request, Category category){
+    private Product createProduct(AddProductRequest request, Category category) {
         return new Product(
                 request.getName(),
                 request.getBrand(),
@@ -64,51 +66,78 @@ public class ProductService implements IProductService {
     public Product updateProduct(UpdateProductRequest newProduct, Long productToUpdateId) {
         return productRepository.findById(productToUpdateId)
                 .map(existingProduct -> updateExistingProduct(existingProduct, newProduct))
-                .map(productRepository :: save)
+                .map(productRepository::save)
                 .orElseThrow(() -> new ProductNotFoundException("Product not found!"));
     }
 
-    private Product updateExistingProduct(Product existingProduct, UpdateProductRequest request){
+    private Product updateExistingProduct(Product existingProduct, UpdateProductRequest request) {
         existingProduct.setName(request.getName());
         existingProduct.setBrand(request.getBrand());
         existingProduct.setPrice(request.getPrice());
         existingProduct.setInventory(request.getInventory());
         existingProduct.setDescription(request.getDescription());
 
-        Category category = categoryRepository.findByName(request.getCategory().getName());
+        Category category = categoryRepository.findByName(request.getCategory().getName())
+                .orElseGet(() -> {
+                    Category newCategory = new Category(request.getCategory().getName());
+                    return categoryRepository.save(newCategory);
+                });
         existingProduct.setCategory(category);
 
         return existingProduct;
     }
 
     @Override
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
+    public List<ProductDto> getAllProducts() {
+        List<Product> products = productRepository.findAll();
+        return products.stream()
+                .map(product -> ProductMapper.productToProductDto(product, new ProductDto()))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<Product> getProductsByCategory(String category) {
-        return productRepository.findByCategoryName(category);
+    public List<ProductDto> getProductsByCategory(String category) {
+        List<Product> products = productRepository.findByCategoryName(category);
+        return products.stream()
+                .map(product -> ProductMapper.productToProductDto(product, new ProductDto()
+                ))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<Product> getProductsByBrand(String brand) {
-        return productRepository.findByBrand(brand);
+    public List<ProductDto> getProductsByBrand(String brand) {
+        List<Product> products = productRepository.findByBrand(brand);
+        return products.stream()
+                .map(product -> ProductMapper.productToProductDto(product, new ProductDto()
+                ))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<Product> getProductsByCategoryAndBrand(String category, String brand) {
-        return productRepository.findByCategoryNameAndBrand(category, brand);
+    public List<ProductDto> getProductsByCategoryAndBrand(String category, String brand) {
+        List<Product> products = productRepository.findByCategoryNameAndBrand(category, brand);
+        return products.stream()
+                .map(product -> ProductMapper.productToProductDto(product, new ProductDto()
+                ))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<Product> getProductsByName(String name) {
-        return productRepository.findByName(name);
+    public List<ProductDto> getProductsByName(String name) {
+        List<Product> products = productRepository.findByName(name);
+        return products.stream()
+                .map(product -> ProductMapper.productToProductDto(product, new ProductDto()
+                ))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<Product> getProductsByBrandAndName(String brand, String name) {
-        return productRepository.findByBrandAndName(brand, name);
+    public List<ProductDto> getProductsByBrandAndName(String brand, String name) {
+        List<Product> products = productRepository.findByBrandAndName(brand, name);
+        return products.stream()
+                .map(product -> ProductMapper.productToProductDto(product, new ProductDto()
+                ))
+                .collect(Collectors.toList());
     }
 
     @Override

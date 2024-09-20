@@ -1,5 +1,6 @@
 package bzh.duncan.dshop.service.product;
 
+import bzh.duncan.dshop.dto.ProductDto;
 import bzh.duncan.dshop.model.Product;
 import bzh.duncan.dshop.request.AddProductRequest;
 import bzh.duncan.dshop.request.UpdateProductRequest;
@@ -12,12 +13,12 @@ public interface IProductService {
     Product getProductById(Long id);
     void deleteProductById(Long id);
     Product updateProduct(UpdateProductRequest newProduct, Long productToUpdateId);
-    List<Product> getAllProducts();
-    List<Product> getProductsByCategory(String category);
-    List<Product> getProductsByBrand(String brand);
-    List<Product> getProductsByCategoryAndBrand(String category, String brand);
-    List<Product> getProductsByName(String name);
-    List<Product> getProductsByBrandAndName(String brand, String name);
+    List<ProductDto> getAllProducts();
+    List<ProductDto> getProductsByCategory(String category);
+    List<ProductDto> getProductsByBrand(String brand);
+    List<ProductDto> getProductsByCategoryAndBrand(String category, String brand);
+    List<ProductDto> getProductsByName(String name);
+    List<ProductDto> getProductsByBrandAndName(String brand, String name);
     Long countProductsByBrandAndName(String brand, String name);
 
 
